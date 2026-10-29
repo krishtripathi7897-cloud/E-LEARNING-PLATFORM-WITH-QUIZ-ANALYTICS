@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Notifications{% endblock %}
+{% block content %}
+    <h2>Notifications</h2>
+    {% if notifs %}
+        <ul class="list">
+            {% for n in notifs %}
+                <li>{{ n.message }} <span class="muted">— {{ n.created_at }}</span></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="empty-state">No notifications yet.</p>
+    {% endif %}
+{% endblock %}

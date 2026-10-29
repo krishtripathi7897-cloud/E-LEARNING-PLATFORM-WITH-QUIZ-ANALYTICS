@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Instructor Dashboard{% endblock %}
+{% block content %}
+    <h2>Welcome, {{ session.get('name') }} 👋</h2>
+    <div class="center-row">
+        <a class="btn" href="{{ url_for('create_course') }}">+ Create New Course</a>
+    </div>
+
+    <h3 class="section-title">My Courses</h3>
+    {% if courses %}
+        <div class="card-grid">
+            {% for c in courses %}
+                <div class="card">
+                    <h4>{{ c.title }}</h4>
+                    <p class="card-desc">{{ c.description or 'No description provided.' }}</p>
+                    <div class="card-actions">
+                        <a class="btn small" href="{{ url_for('view_course', course_id=c.id) }}">Manage</a>
+                        <a class="btn small secondary" href="{{ url_for('instructor_analytics', course_id=c.id) }}">Analytics</a>
+                        <form method="POST" action="{{ url_for('delete_course', course_id=c.id) }}"
+                              onsubmit="return confirm('Delete this course and all its content, quizzes and results? This cannot be undone.');">
+                            <button type="submit" class="btn small danger">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="empty-state">You haven't created any course yet. Click "Create New Course" to get started.</p>
+    {% endif %}
+{% endblock %}

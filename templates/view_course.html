@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}{{ course.title }}{% endblock %}
+{% block content %}
+    <h2>{{ course.title }}</h2>
+    <p class="course-desc">{{ course.description }}</p>
+
+    <div class="center-row">
+        {% if is_owner %}
+            <a class="btn small" href="{{ url_for('add_content', course_id=course.id) }}">+ Add Content</a>
+            <a class="btn small secondary" href="{{ url_for('create_quiz', course_id=course.id) }}">+ Create Quiz</a>
+            <form method="POST" action="{{ url_for('delete_course', course_id=course.id) }}"
+                  onsubmit="return confirm('Delete this entire course? All content, quizzes and results will be removed.');">
+                <button type="submit" class="btn small danger">🗑 Delete Course</button>
+            </form>
+        {% endif %}
+        {% if session.get('role') == 'student' and not is_enrolled %}
+            <a class="btn" href="{{ url_for('enroll_course', course_id=course.id) }}">Enroll in this Course</a>
+        {% endif %}
+    </div>
+
+    <div class="section-wrap">
+        <h3 class="section-title">Course Content</h3>
+        {% if contents %}
+            <ul class="list">
+                {% for c in contents %}
+                    <li>
+                        <div class="li-main">
+                            <strong>{{ c.title }}</strong> <span class="tag">{{ c.ctype }}</span>
+                        </div>
+                        <div class="li-actions">
+                            {% if is_enrolled or is_owner %}
+                                <a class="link-btn" href="{{ url_for('uploaded_file', filename=c.filename) }}" target="_blank">Open File</a>
+                            {% endif %}
+                            {% if is_owner %}
+                                <form method="POST" action="{{ url_for('delete_content', content_id=c.id) }}"
+                                      onsubmit="return confirm('Delete this content?');">
+                                    <button type="submit" class="btn tiny danger">Delete</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="empty-state">No content added yet.</p>
+        {% endif %}
+
+        <h3 class="section-title">Quizzes</h3>
+        {% if quizzes %}
+            <ul class="list">
+                {% for q in quizzes %}
+                    <li>
+                        <div class="li-main">
+                            <strong>{{ q.title }}</strong> <span class="muted">({{ q.time_limit }} min)</span>
+                        </div>
+                        <div class="li-actions">
+                            {% if is_owner %}
+                                <a class="link-btn" href="{{ url_for('add_question', quiz_id=q.id) }}">Edit Questions</a>
+                                <form method="POST" action="{{ url_for('delete_quiz', quiz_id=q.id) }}"
+                                      onsubmit="return confirm('Delete this quiz with all its questions and student attempts?');">
+                                    <button type="submit" class="btn tiny danger">Delete</button>
+                                </form>
+                            {% elif is_enrolled %}
+                                <a class="link-btn" href="{{ url_for('attempt_quiz', quiz_id=q.id) }}">Attempt Quiz</a>
+                            {% endif %}
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="empty-state">No quizzes yet.</p>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}My Analytics{% endblock %}
+{% block content %}
+    <h2>My Analytics</h2>
+
+    {% if attempts %}
+        <div class="chart-box">
+            <h4>Score Trend Over Attempts</h4>
+            <canvas id="trendChart"></canvas>
+        </div>
+
+        <div class="chart-box">
+            <h4>Topic-wise Accuracy (%)</h4>
+            <canvas id="topicChart"></canvas>
+        </div>
+
+        <h3 class="section-title">Attempt History</h3>
+        <table class="data-table">
+            <tr><th>Quiz</th><th>Course</th><th>Score</th><th>Date</th></tr>
+            {% for a in attempts %}
+                <tr>
+                    <td>{{ a.quiz_title }}</td>
+                    <td>{{ a.course_title }}</td>
+                    <td>{{ a.score }} / {{ a.total }}</td>
+                    <td>{{ a.attempted_at }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p class="empty-state">You haven't attempted any quiz yet. Attempt a quiz to see your analytics here.</p>
+    {% endif %}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <script>
+        {% if attempts %}
+        new Chart(document.getElementById('trendChart'), {
+            type: 'line',
+            data: {
+                labels: {{ labels | tojson }},
+                datasets: [{
+                    label: 'Score %',
+                    data: {{ scores | tojson }},
+                    borderColor: '#2563eb',
+                    backgroundColor: 'rgba(37,99,235,0.15)',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: { scales: { y: { min: 0, max: 100 } } }
+        });
+
+        new Chart(document.getElementById('topicChart'), {
+            type: 'bar',
+            data: {
+                labels: {{ topic_labels | tojson }},
+                datasets: [{
+                    label: 'Average Accuracy %',
+                    data: {{ topic_scores | tojson }},
+                    backgroundColor: '#16a34a'
+                }]
+            },
+            options: { scales: { y: { min: 0, max: 100 } } }
+        });
+        {% endif %}
+    </script>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Add Questions{% endblock %}
+{% block content %}
+    <h2>Add Questions — "{{ quiz.title }}"</h2>
+    <p class="course-desc">Course: {{ quiz.course_title }}</p>
+
+    <form method="POST" class="form-card" id="qform">
+        <label>Question Text</label>
+        <textarea name="qtext" rows="2" required></textarea>
+
+        <label>Question Type</label>
+        <select name="qtype" id="qtype" required onchange="toggleFields()">
+            <option value="mcq">Multiple Choice (MCQ)</option>
+            <option value="truefalse">True / False</option>
+            <option value="short">Short Answer</option>
+        </select>
+
+        <div id="mcq-fields">
+            <label>Option A</label>
+            <input type="text" name="option_a">
+            <label>Option B</label>
+            <input type="text" name="option_b">
+            <label>Option C</label>
+            <input type="text" name="option_c">
+            <label>Option D</label>
+            <input type="text" name="option_d">
+        </div>
+
+        <label>Correct Answer</label>
+        <input type="text" name="correct_answer" required placeholder="For MCQ: exact option text. For True/False: True or False.">
+
+        <button type="submit" class="btn">Add Question</button>
+    </form>
+
+    <div class="center-row">
+        <a class="btn secondary" href="{{ url_for('finish_quiz_setup', quiz_id=quiz.id) }}">Finish & Publish Quiz</a>
+    </div>
+
+    <div class="section-wrap">
+        <h3 class="section-title">Questions Added ({{ questions|length }})</h3>
+        <ul class="list">
+            {% for q in questions %}
+                <li>
+                    <div class="li-main">{{ q.qtext }} <span class="tag">{{ q.qtype }}</span></div>
+                    <div class="li-actions">
+                        <form method="POST" action="{{ url_for('delete_question', question_id=q.id) }}"
+                              onsubmit="return confirm('Delete this question?');">
+                            <button type="submit" class="btn tiny danger">Delete</button>
+                        </form>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <script>
+        function toggleFields() {
+            const type = document.getElementById('qtype').value;
+            document.getElementById('mcq-fields').style.display = (type === 'mcq') ? 'block' : 'none';
+        }
+        toggleFields();
+    </script>
+{% endblock %}

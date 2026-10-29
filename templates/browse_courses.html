@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Browse Courses{% endblock %}
+{% block content %}
+    <h2>All Courses</h2>
+    {% if courses %}
+        <div class="card-grid">
+            {% for c in courses %}
+                <div class="card">
+                    <h4>{{ c.title }}</h4>
+                    <p class="card-desc">{{ c.description or 'No description provided.' }}</p>
+                    <p class="author">👨‍🏫 By {{ c.instructor_name }}</p>
+                    <div class="card-actions">
+                        <a class="btn small" href="{{ url_for('view_course', course_id=c.id) }}">View</a>
+                        {% if session.get('role') == 'student' and c.id not in enrolled_ids %}
+                            <a class="btn small secondary" href="{{ url_for('enroll_course', course_id=c.id) }}">Enroll</a>
+                        {% elif c.id in enrolled_ids %}
+                            <span class="tag success">✓ Enrolled</span>
+                        {% endif %}
+                        {% if session.get('role') == 'instructor' and c.instructor_id == session.get('user_id') %}
+                            <form method="POST" action="{{ url_for('delete_course', course_id=c.id) }}"
+                                  onsubmit="return confirm('Delete this course and all its content, quizzes and results? This cannot be undone.');">
+                                <button type="submit" class="btn small danger">Delete</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="empty-state">No courses available yet.</p>
+    {% endif %}
+{% endblock %}

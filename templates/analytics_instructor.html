@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Course Analytics{% endblock %}
+{% block content %}
+    <h2>Analytics — {{ course.title }}</h2>
+
+    {% if quiz_labels %}
+        <div class="chart-box">
+            <h4>Class Average Score per Quiz (%)</h4>
+            <canvas id="classChart"></canvas>
+        </div>
+
+        <div class="chart-box">
+            <h4>Number of Attempts per Quiz</h4>
+            <canvas id="attemptChart"></canvas>
+        </div>
+    {% else %}
+        <p class="empty-state">No quizzes in this course yet.</p>
+    {% endif %}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <script>
+        {% if quiz_labels %}
+        new Chart(document.getElementById('classChart'), {
+            type: 'bar',
+            data: {
+                labels: {{ quiz_labels | tojson }},
+                datasets: [{
+                    label: 'Class Average %',
+                    data: {{ class_averages | tojson }},
+                    backgroundColor: '#2563eb'
+                }]
+            },
+            options: { scales: { y: { min: 0, max: 100 } } }
+        });
+
+        new Chart(document.getElementById('attemptChart'), {
+            type: 'bar',
+            data: {
+                labels: {{ quiz_labels | tojson }},
+                datasets: [{
+                    label: 'Attempts',
+                    data: {{ attempt_counts | tojson }},
+                    backgroundColor: '#f59e0b'
+                }]
+            }
+        });
+        {% endif %}
+    </script>
+{% endblock %}

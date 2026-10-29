@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Create Quiz{% endblock %}
+{% block content %}
+    <h2>Create Quiz for "{{ course.title }}"</h2>
+    <form method="POST" class="form-card">
+        <label>Quiz Title</label>
+        <input type="text" name="title" required>
+
+        <label>Time Limit (minutes)</label>
+        <input type="number" name="time_limit" value="10" min="1" required>
+
+        <button type="submit" class="btn">Create & Add Questions</button>
+    </form>
+{% endblock %}

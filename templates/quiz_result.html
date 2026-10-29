@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Result{% endblock %}
+{% block content %}
+    <h2>Quiz Result — {{ attempt.quiz_title }}</h2>
+    <div class="result-box">
+        <h1>{{ percentage }}%</h1>
+        <p>Score: {{ attempt.score }} / {{ attempt.total }}</p>
+        <p class="muted">Attempted on {{ attempt.attempted_at }}</p>
+    </div>
+    <div class="center-row">
+        <a class="btn" href="{{ url_for('student_dashboard') }}">Back to Dashboard</a>
+        <a class="btn secondary" href="{{ url_for('student_analytics') }}">View Analytics</a>
+    </div>
+{% endblock %}

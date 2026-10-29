@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Attempt Quiz{% endblock %}
+{% block content %}
+    <h2>{{ quiz.title }}</h2>
+    <p class="muted">Time Limit: {{ quiz.time_limit }} minutes | {{ questions|length }} Questions</p>
+
+    <form method="POST" class="form-card">
+        {% for q in questions %}
+            <div class="question-block">
+                <p><strong>Q{{ loop.index }}. {{ q.qtext }}</strong></p>
+
+                {% if q.qtype == 'mcq' %}
+                    <label><input type="radio" name="question_{{ q.id }}" value="{{ q.option_a }}" required> {{ q.option_a }}</label>
+                    <label><input type="radio" name="question_{{ q.id }}" value="{{ q.option_b }}"> {{ q.option_b }}</label>
+                    <label><input type="radio" name="question_{{ q.id }}" value="{{ q.option_c }}"> {{ q.option_c }}</label>
+                    <label><input type="radio" name="question_{{ q.id }}" value="{{ q.option_d }}"> {{ q.option_d }}</label>
+                {% elif q.qtype == 'truefalse' %}
+                    <label><input type="radio" name="question_{{ q.id }}" value="True" required> True</label>
+                    <label><input type="radio" name="question_{{ q.id }}" value="False"> False</label>
+                {% else %}
+                    <input type="text" name="question_{{ q.id }}" placeholder="Your answer" required>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <button type="submit" class="btn">Submit Quiz</button>
+    </form>
+{% endblock %}

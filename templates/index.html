@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+    <div class="hero">
+        <h1>E-Learning Platform with Quiz Analytics</h1>
+        <p>Learn through structured courses, test yourself with quizzes, and track your progress with analytics.</p>
+        {% if not session.get('user_id') %}
+            <a class="btn" href="{{ url_for('register') }}">Get Started</a>
+        {% endif %}
+    </div>
+
+    <div class="features">
+        <div class="feature-card">
+            <h3>📖 Courses</h3>
+            <p>Structured content: videos, PDFs and notes organized by instructors.</p>
+        </div>
+        <div class="feature-card">
+            <h3>📝 Quizzes</h3>
+            <p>MCQ, True/False and Short Answer questions with instant auto-evaluation.</p>
+        </div>
+        <div class="feature-card">
+            <h3>📊 Analytics</h3>
+            <p>Track score trends, topic-wise accuracy, and class performance.</p>
+        </div>
+    </div>
+{% endblock %}
